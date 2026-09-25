@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="ai-chat.css">
+<script src="ai-chat.js"></script>
+
+
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>CampusCompass — Student OS</title>
+
+  <!-- Shared CampusCompass data + sync engine -->
+  <script src="campus.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #070910;
+      --surface: #101522;
+      --surface2: #151b2a;
+      --surface3: #20283a;
+
+      --purple: #8065ff;
+      --purple-light: #aa99ff;
+      --cyan: #42d9ff;
+      --green: #4ee0a8;
+      --yellow: #ffd166;
+
+      --text: #f6f7fb;
+      --muted: #929aaa;
+
+      --border: rgba(255,255,255,.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+
+      color: var(--text);
+
+      font-family: "DM Sans", sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 75% -10%,
+          rgba(128,101,255,.16),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at -10% 50%,
+          rgba(66,217,255,.05),
+          transparent 30%
+        ),
+        var(--bg);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+    }
+
+    /* =====================================================
+       NAVBAR
+    ===================================================== */
+
+    .navbar {
+      height: 76px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      font-family: "Space Grotesk";
+      font-weight: 700;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .nav-btn {
+      border: 1px solid var(--border);
+
+      background: transparent;
+
+      color: var(--muted);
+
+      padding: 9px 13px;
+
+      border-radius: 9px;
+
+      font-size: 11px;
+
+      transition: .2s;
+    }
+
+    .nav-btn:hover {
+      color: white;
+      background: var(--surface);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      font-weight: 700;
+    }
+
+    /* =====================================================
+       HERO
+    ===================================================== */
+
+    main {
+      padding: 70px 0 90px;
+    }
+
+    .hero {
+      min-height: 520px;
+
+      display: grid;
+
+      grid-template-columns:
+        1.1fr .9fr;
+
+      gap: 50px;
+
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 16px;
+
+      color: var(--purple-light);
+
+      text-transform: uppercase;
+
+      letter-spacing: 2px;
+
+      font-size: 10px;
+
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      box-shadow:
+        0 0 12px
+        rgba(78,224,168,.5);
+    }
+
+    h1 {
+      max-width: 700px;
+
+      font-family: "Space Grotesk";
+
+      font-size:
+        clamp(42px, 7vw, 72px);
+
+      line-height: 1.02;
+
+      letter-spacing: -3px;
+
+      margin-bottom: 20px;
+    }
+
+    .gradient-text {
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple-light),
+          var(--cyan)
+        );
+
+      -webkit-background-clip: text;
+      background-clip: text;
+
+      color: transparent;
+    }
+
+    .hero-description {
+      max-width: 570px;
+
+      color: var(--muted);
+
+      font-size: 15px;
+
+      line-height: 1.7;
+
+      margin-bottom: 27px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 10px;
+    }
+
+    .primary-btn {
+      border: none;
+
+      padding: 13px 19px;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #6247db
+        );
+
+      color: white;
+
+      font-weight: 600;
+
+      font-size: 11px;
+
+      box-shadow:
+        0 10px 30px
+        rgba(128,101,255,.2);
+
+      transition: .2s;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 35px
+        rgba(128,101,255,.3);
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--border);
+
+      padding: 13px 19px;
+
+      border-radius: 10px;
+
+      background: var(--surface);
+
+      color: white;
+
+      font-size: 11px;
+
+      transition: .2s;
+    }
+
+    .secondary-btn:hover {
+      border-color:
+        rgba(128,101,255,.5);
+
+      background:
+        rgba(128,101,255,.08);
+    }
+
+    /* =====================================================
+       HERO CARD
+    ===================================================== */
+
+    .hero-card {
+      position: relative;
+
+      overflow: hidden;
+
+      padding: 22px;
+
+      border: 1px solid
+        rgba(128,101,255,.2);
+
+      border-radius: 20px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(128,101,255,.12),
+          rgba(16,21,34,.95)
+        );
+
+      box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.3);
+    }
+
+    .hero-card::before {
+      content: "";
+
+      position: absolute;
+
+      width: 240px;
+      height: 240px;
+
+      right: -100px;
+      top: -100px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(66,217,255,.07);
+    }
+
+    .card-header {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: "Space Grotesk";
+
+      font-size: 14px;
+
+      font-weight: 600;
+    }
+
+    .live {
+      color: var(--green);
+
+      font-size: 8px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 1px;
+    }
+
+    .progress-number {
+      font-family: "Space Grotesk";
+
+      font-size: 46px;
+
+      font-weight: 700;
+
+      margin-bottom: 4px;
+    }
+
+    .progress-label {
+      color: var(--muted);
+
+      font-size: 9px;
+
+      margin-bottom: 18px;
+    }
+
+    .progress-bar {
+      height: 9px;
+
+      overflow: hidden;
+
+      border-radius: 50px;
+
+      background: var(--surface3);
+    }
+
+    .progress-fill {
+      width: 0%;
+
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      transition:
+        width .7s ease;
+    }
+
+    .stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 9px;
+
+      margin-top: 18px;
+    }
+
+    .stat {
+      padding: 12px;
+
+      border-radius: 10px;
+
+      background:
+        rgba(255,255,255,.035);
+
+      border:
+        1px solid
+        rgba(255,255,255,.05);
+    }
+
+    .stat strong {
+      display: block;
+
+      font-family: "Space Grotesk";
+
+      font-size: 18px;
+
+      margin-bottom: 3px;
+    }
+
+    .stat span {
+      color: var(--muted);
+
+      font-size: 7px;
+
+      text-transform: uppercase;
+
+      letter-spacing: .8px;
+    }
+
+    /* =====================================================
+       FEATURES
+    ===================================================== */
+
+    .features {
+      padding: 30px 0 80px;
+    }
+
+    .section-label {
+      margin-bottom: 20px;
+
+      color: var(--muted);
+
+      text-transform: uppercase;
+
+      letter-spacing: 2px;
+
+      font-size: 9px;
+
+      font-weight: 700;
+    }
+
+    .feature-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 14px;
+    }
+
+    .feature-card {
+      padding: 20px;
+
+      border-radius: 15px;
+
+      border: 1px solid var(--border);
+
+      background:
+        rgba(16,21,34,.75);
+
+      transition: .2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+
+      border-color:
+        rgba(128,101,255,.25);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+
+      display: grid;
+      place-items: center;
+
+      margin-bottom: 15px;
+
+      border-radius: 11px;
+
+      background:
+        rgba(128,101,255,.1);
+
+      font-size: 18px;
+    }
+
+    .feature-card h3 {
+      font-family: "Space Grotesk";
+
+      font-size: 14px;
+
+      margin-bottom: 7px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+
+      font-size: 9px;
+
+      line-height: 1.65;
+    }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    footer {
+      padding: 25px 0 35px;
+
+      border-top:
+        1px solid var(--border);
+
+      color: var(--muted);
+
+      font-size: 9px;
+
+      text-align: center;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 850px) {
+
+      .hero {
+        grid-template-columns: 1fr;
+
+        gap: 35px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media(max-width: 600px) {
+
+      .container {
+        width: 94%;
+      }
+
+      .navbar {
+        height: 68px;
+      }
+
+      .nav-btn {
+        display: none;
+      }
+
+      main {
+        padding-top: 45px;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<div class="container">
+
+  <nav class="navbar">
+
+    <a
+      href="index.html"
+      class="logo"
+    >
+
+      <div class="logo-icon">
+        🧭
+      </div>
+
+      CampusCompass
+
+    </a>
+
+
+    <div class="nav-right">
+
+      <button
+        class="nav-btn"
+        id="navDashboard"
+        onclick="openDashboard()"
+      >
+        Dashboard →
+      </button>
+
+      <button
+        class="nav-btn"
+        onclick="openPlanner()"
+      >
+        My Plan →
+      </button>
+
+      <div
+        class="avatar"
+        id="avatar"
+      >
+        ?
+      </div>
+
+    </div>
+
+  </nav>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main>
+
+  <div class="container">
+
+    <section class="hero">
+
+
+      <!-- HERO TEXT -->
+
+      <div>
+
+        <div class="eyebrow">
+          Your Student OS
+        </div>
+
+        <h1>
+          Build your
+          <span class="gradient-text">
+            future
+          </span>
+          one step at a time.
+        </h1>
+
+        <p
+          class="hero-description"
+          id="heroDescription"
+        >
+          CampusCompass turns your goals into a
+          personalized roadmap of skills, projects,
+          and practical next steps.
+        </p>
+
+
+        <div class="hero-actions">
+
+          <button
+            class="primary-btn"
+            id="primaryAction"
+            onclick="handlePrimaryAction()"
+          >
+            Start Your Journey →
+          </button>
+
+          <button
+            class="secondary-btn"
+            onclick="openPlanner()"
+          >
+            View My Plan
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- LIVE PROGRESS CARD -->
+
+      <div class="hero-card">
+
+        <div class="card-header">
+
+          <div class="card-title">
+            CampusCompass Progress
+          </div>
+
+          <div
+            class="live"
+            id="statusLabel"
+          >
+            ● Ready
+          </div>
+
+        </div>
+
+
+        <div
+          class="progress-number"
+          id="heroProgress"
+        >
+          0%
+        </div>
+
+        <div class="progress-label">
+          Overall roadmap progress
+        </div>
+
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-fill"
+            id="heroProgressBar"
+          ></div>
+
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat">
+
+            <strong
+              id="completedTasks"
+            >
+              0
+            </strong>
+
+            <span>
+              Completed
+            </span>
+
+          </div>
+
+
+          <div class="stat">
+
+            <strong
+              id="remainingTasks"
+            >
+              0
+            </strong>
+
+            <span>
+              Remaining
+            </span>
+
+          </div>
+
+
+          <div class="stat">
+
+            <strong
+              id="completedMinutes"
+            >
+              0
+            </strong>
+
+            <span>
+              Minutes
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         FEATURES
+    ================================================= -->
+
+    <section class="features">
+
+      <div class="section-label">
+        Everything in one place
+      </div>
+
+
+      <div class="feature-grid">
+
+
+        <article class="feature-card">
+
+          <div class="feature-icon">
+            🧭
+          </div>
+
+          <h3>
+            Personalized Roadmap
+          </h3>
+
+          <p>
+            Your course, goals, interests, and
+            available time are used to organize
+            your learning journey.
+          </p>
+
+        </article>
+
+
+        <article class="feature-card">
+
+          <div class="feature-icon">
+            📚
+          </div>
+
+          <h3>
+            Daily Tasks
+          </h3>
+
+          <p>
+            Break a larger goal into manageable
+            tasks that you can complete and track
+            every day.
+          </p>
+
+        </article>
+
+
+        <article class="feature-card">
+
+          <div class="feature-icon">
+            🤖
+          </div>
+
+          <h3>
+            Campus AI
+          </h3>
+
+          <p>
+            Ask about your progress, next task,
+            projects, skills, goals, or study time
+            from your dashboard.
+          </p>
+
+        </article>
+
+
+      </div>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+  <div class="container">
+
+    CampusCompass · Your personalized student journey
+
+  </div>
+
+</footer>
+
+
+
+<script>
+
+/*
+============================================================
+CAMPUSCOMPASS — INDEX
+============================================================
+Uses campus.js as the single source of truth.
+
+Stored data:
+- campusCompassStudent
+- campusCompassPlan
+- campusCompassPlannerTasks
+============================================================
+*/
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function openDashboard() {
+
+  if (ccGetStudent()) {
+
+    window.location.href =
+      "dashboard.html";
+
+    return;
+
+  }
+
+  window.location.href =
+    "onboarding.html";
+
+}
+
+
+function openPlanner() {
+
+  if (!ccGetStudent()) {
+
+    window.location.href =
+      "onboarding.html";
+
+    return;
+
+  }
+
+  window.location.href =
+    "planner.html";
+
+}
+
+
+/* =========================================================
+   PRIMARY ACTION
+========================================================= */
+
+function handlePrimaryAction() {
+
+  const student =
+    ccGetStudent();
+
+  const plan =
+    ccGetPlan();
+
+  if (!student) {
+
+    window.location.href =
+      "onboarding.html";
+
+    return;
+
+  }
+
+  if (!plan.length) {
+
+    window.location.href =
+      "planner.html";
+
+    return;
+
+  }
+
+  window.location.href =
+    "dashboard.html";
+
+}
+
+
+/* =========================================================
+   RENDER INDEX
+========================================================= */
+
+function renderIndex() {
+
+  const student =
+    ccGetStudent();
+
+  const tasks =
+    ccGetAllTasks();
+
+  const completed =
+    ccGetCompletedTasks();
+
+  const progress =
+    ccGetProgress();
+
+  const minutes =
+    ccGetCompletedMinutes();
+
+
+  const avatar =
+    document.getElementById(
+      "avatar"
+    );
+
+  const primaryAction =
+    document.getElementById(
+      "primaryAction"
+    );
+
+  const navDashboard =
+    document.getElementById(
+      "navDashboard"
+    );
+
+  const heroDescription =
+    document.getElementById(
+      "heroDescription"
+    );
+
+  const statusLabel =
+    document.getElementById(
+      "statusLabel"
+    );
+
+
+  /* =====================================================
+     NO PROFILE
+  ===================================================== */
+
+  if (!student) {
+
+    avatar.innerText =
+      "?";
+
+    primaryAction.innerText =
+      "Start Your Journey →";
+
+    navDashboard.innerText =
+      "Get Started →";
+
+    navDashboard.onclick =
+      () => {
+
+        window.location.href =
+          "onboarding.html";
+
+      };
+
+    heroDescription.innerText =
+      "CampusCompass turns your goals into a personalized roadmap of skills, projects, and practical next steps.";
+
+    statusLabel.innerText =
+      "● Ready";
+
+  }
+
+
+  /* =====================================================
+     EXISTING PROFILE
+  ===================================================== */
+
+  else {
+
+    const firstName =
+      String(
+        student.name ||
+        "Student"
+      )
+      .trim()
+      .split(/\s+/)[0];
+
+
+    avatar.innerText =
+      firstName
+        .charAt(0)
+        .toUpperCase();
+
+
+    navDashboard.innerText =
+      "Dashboard →";
+
+
+    navDashboard.onclick =
+      openDashboard;
+
+
+    if (!tasks.length) {
+
+      primaryAction.innerText =
+        "Create My Plan →";
+
+      primaryAction.onclick =
+        () => {
+
+          window.location.href =
+            "planner.html";
+
+        };
+
+      statusLabel.innerText =
+        "● Profile saved";
+
+
+      heroDescription.innerText =
+        `Welcome back, ${firstName}. Your profile is saved. Create or open your personalized plan to continue.`;
+
+    }
+
+    else {
+
+      primaryAction.innerText =
+        "Continue Journey →";
+
+      primaryAction.onclick =
+        openDashboard;
+
+
+      statusLabel.innerText =
+        "● Journey active";
+
+
+      heroDescription.innerText =
+        `Welcome back, ${firstName}. Your CampusCompass journey is ready. Continue working through your personalized roadmap.`;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     PROGRESS
+  ===================================================== */
+
+  const completedCount =
+    completed.length;
+
+
+  const remaining =
+    Math.max(
+      0,
+      tasks.length -
+      completedCount
+    );
+
+
+  document.getElementById(
+    "heroProgress"
+  ).innerText =
+    `${progress}%`;
+
+
+  document.getElementById(
+    "heroProgressBar"
+  ).style.width =
+    `${progress}%`;
+
+
+  document.getElementById(
+    "completedTasks"
+  ).innerText =
+    completedCount;
+
+
+  document.getElementById(
+    "remainingTasks"
+  ).innerText =
+    remaining;
+
+
+  document.getElementById(
+    "completedMinutes"
+  ).innerText =
+    minutes;
+
+}
+
+
+/* =========================================================
+   CROSS-PAGE SYNC
+========================================================= */
+
+window.refreshCampusCompass =
+  function() {
+
+    renderIndex();
+
+  };
+
+
+window.addEventListener(
+  "campusCompassUpdated",
+  () => {
+
+    renderIndex();
+
+  }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+renderIndex();
+
+</script>
+
+</body>
+</html>

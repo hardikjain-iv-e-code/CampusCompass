@@ -1,0 +1,3286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="ai-chat.css">
+<script src="ai-chat.js"></script>
+
+
+  <script src="campus.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CampusCompass — Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #070910;
+      --surface: #101522;
+      --surface2: #151b2a;
+      --surface3: #20283a;
+
+      --purple: #8065ff;
+      --purple-light: #aa99ff;
+      --cyan: #42d9ff;
+      --green: #4ee0a8;
+      --yellow: #ffd166;
+      --red: #ff7180;
+
+      --text: #f6f7fb;
+      --muted: #929aaa;
+      --border: rgba(255,255,255,.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 75% -10%,
+          rgba(128,101,255,.16),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at -10% 50%,
+          rgba(66,217,255,.05),
+          transparent 30%
+        ),
+        var(--bg);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+    }
+
+    /* =========================================================
+       NAVBAR
+    ========================================================= */
+
+    .navbar {
+      height: 76px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      color: white;
+
+      font-family: "Space Grotesk";
+      font-weight: 700;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .nav-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+
+      padding: 9px 13px;
+      border-radius: 9px;
+
+      font-size: 11px;
+      transition: .2s;
+    }
+
+    .nav-btn:hover {
+      color: white;
+      background: var(--surface);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       MAIN
+    ========================================================= */
+
+    main {
+      padding: 40px 0 80px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+
+      gap: 25px;
+      margin-bottom: 25px;
+    }
+
+    .eyebrow {
+      color: var(--purple-light);
+
+      text-transform: uppercase;
+      letter-spacing: 2px;
+
+      font-size: 10px;
+      font-weight: 700;
+
+      margin-bottom: 9px;
+    }
+
+    h1 {
+      font-family: "Space Grotesk";
+
+      font-size:
+        clamp(30px, 5vw, 45px);
+
+      letter-spacing: -1.8px;
+
+      margin-bottom: 7px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 9px;
+    }
+
+    .action-btn {
+      padding: 10px 14px;
+
+      border-radius: 9px;
+
+      border: 1px solid var(--border);
+
+      background: var(--surface);
+
+      color: white;
+
+      font-size: 10px;
+
+      transition: .2s;
+    }
+
+    .action-btn:hover {
+      border-color: rgba(128,101,255,.5);
+
+      background:
+        rgba(128,101,255,.08);
+    }
+
+    /* =========================================================
+       OVERVIEW
+    ========================================================= */
+
+    .overview-grid {
+      display: grid;
+
+      grid-template-columns:
+        1.35fr 1fr 1fr;
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .overview-card {
+      min-height: 145px;
+
+      padding: 20px;
+
+      border-radius: 15px;
+
+      border: 1px solid var(--border);
+
+      background:
+        rgba(16,21,34,.88);
+    }
+
+    .overview-card.primary {
+      position: relative;
+      overflow: hidden;
+
+      border-color:
+        rgba(128,101,255,.2);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(128,101,255,.14),
+          rgba(66,217,255,.04)
+        );
+    }
+
+    .overview-card.primary::after {
+      content: "✦";
+
+      position: absolute;
+
+      right: 12px;
+      top: -25px;
+
+      font-size: 100px;
+
+      color:
+        rgba(128,101,255,.06);
+    }
+
+    .card-label {
+      color: var(--muted);
+
+      font-size: 9px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 1.4px;
+
+      margin-bottom: 10px;
+    }
+
+    .big-number {
+      font-family: "Space Grotesk";
+
+      font-size: 34px;
+
+      font-weight: 700;
+
+      margin-bottom: 4px;
+    }
+
+    .card-description {
+      color: var(--muted);
+
+      font-size: 9px;
+
+      line-height: 1.5;
+    }
+
+    .mini-progress {
+      height: 7px;
+
+      margin-top: 14px;
+
+      overflow: hidden;
+
+      border-radius: 50px;
+
+      background: var(--surface3);
+    }
+
+    .mini-progress-fill {
+      height: 100%;
+
+      width: 0;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      transition: width .6s ease;
+    }
+
+    /* =========================================================
+       GRID
+    ========================================================= */
+
+    .dashboard-grid {
+      display: grid;
+
+      grid-template-columns:
+        1.45fr 1fr;
+
+      gap: 18px;
+
+      align-items: start;
+    }
+
+    .card {
+      padding: 19px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 15px;
+
+      background:
+        rgba(16,21,34,.88);
+    }
+
+    .card + .card {
+      margin-top: 14px;
+    }
+
+    .card-title-row {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-family: "Space Grotesk";
+
+      font-size: 14px;
+
+      font-weight: 600;
+    }
+
+    .card-link {
+      border: none;
+
+      background: transparent;
+
+      color: var(--purple-light);
+
+      font-size: 9px;
+
+      cursor: pointer;
+    }
+
+    .card-link:hover {
+      color: white;
+    }
+
+    /* =========================================================
+       TASKS
+    ========================================================= */
+
+    .task-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .task {
+      display: flex;
+
+      align-items: center;
+
+      gap: 11px;
+
+      padding: 11px;
+
+      border-radius: 10px;
+
+      background:
+        rgba(255,255,255,.025);
+
+      border:
+        1px solid
+        rgba(255,255,255,.045);
+
+      transition: .2s;
+    }
+
+    .task:hover {
+      background:
+        rgba(255,255,255,.045);
+
+      border-color:
+        rgba(128,101,255,.18);
+    }
+
+    .task-check {
+      width: 21px;
+      height: 21px;
+
+      display: grid;
+      place-items: center;
+
+      flex: 0 0 auto;
+
+      border:
+        2px solid #4b5365;
+
+      border-radius: 6px;
+
+      color: #06120d;
+
+      font-size: 11px;
+
+      cursor: pointer;
+    }
+
+    .task.completed {
+      opacity: .55;
+    }
+
+    .task.completed .task-check {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .task.completed .task-title {
+      text-decoration: line-through;
+    }
+
+    .task-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-size: 10px;
+
+      font-weight: 600;
+
+      line-height: 1.4;
+
+      margin-bottom: 3px;
+    }
+
+    .task-meta {
+      color: var(--muted);
+
+      font-size: 8px;
+    }
+
+    .task-status {
+      color: var(--muted);
+
+      font-size: 8px;
+
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       NEXT STEP
+    ========================================================= */
+
+    .next-step {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .next-step::before {
+      content: "";
+
+      position: absolute;
+
+      width: 180px;
+      height: 180px;
+
+      right: -80px;
+      top: -80px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(128,101,255,.09);
+    }
+
+    .ai-label {
+      color: var(--purple-light);
+
+      font-size: 9px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 1.5px;
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+    }
+
+    .next-title {
+      position: relative;
+
+      font-family: "Space Grotesk";
+
+      font-size: 19px;
+
+      line-height: 1.25;
+
+      margin-bottom: 7px;
+    }
+
+    .next-description {
+      position: relative;
+
+      color: var(--muted);
+
+      font-size: 9px;
+
+      line-height: 1.6;
+
+      margin-bottom: 14px;
+    }
+
+    .next-button {
+      position: relative;
+
+      border: none;
+
+      border-radius: 8px;
+
+      padding: 9px 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #6247db
+        );
+
+      color: white;
+
+      font-size: 9px;
+    }
+
+    /* =========================================================
+       PROGRESS
+    ========================================================= */
+
+    .progress-list {
+      display: grid;
+      gap: 16px;
+
+      margin-top: 15px;
+    }
+
+    .progress-item {
+      display: grid;
+      gap: 7px;
+    }
+
+    .progress-top {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+    }
+
+    .progress-name {
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .progress-percent {
+      color: var(--purple-light);
+
+      font-size: 9px;
+
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      width: 100%;
+
+      height: 7px;
+
+      overflow: hidden;
+
+      border-radius: 50px;
+
+      background: var(--surface3);
+    }
+
+    .progress-fill {
+      width: 0;
+
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      transition: width .7s ease;
+    }
+
+    /* =========================================================
+       JOURNEY
+    ========================================================= */
+
+    .journey {
+      display: flex;
+
+      align-items: center;
+
+      gap: 6px;
+
+      overflow-x: auto;
+
+      padding: 5px 0 9px;
+    }
+
+    .journey::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .journey::-webkit-scrollbar-thumb {
+      background: var(--surface3);
+      border-radius: 20px;
+    }
+
+    .journey-node {
+      min-width: 75px;
+      text-align: center;
+    }
+
+    .journey-circle {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      margin: auto auto 7px;
+
+      border-radius: 50%;
+
+      border:
+        2px solid #394155;
+
+      background: var(--surface2);
+
+      font-size: 15px;
+    }
+
+    .journey-node.done .journey-circle {
+      border-color: var(--green);
+
+      background:
+        rgba(78,224,168,.1);
+    }
+
+    .journey-node.active .journey-circle {
+      border-color: var(--purple);
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #5c42ca
+        );
+
+      box-shadow:
+        0 0 18px
+        rgba(128,101,255,.3);
+    }
+
+    .journey-label {
+      color: var(--muted);
+
+      font-size: 8px;
+
+      white-space: nowrap;
+    }
+
+    .journey-line {
+      width: 28px;
+      min-width: 28px;
+
+      height: 2px;
+
+      background: var(--surface3);
+    }
+
+    .journey-line.done {
+      background:
+        linear-gradient(
+          90deg,
+          var(--green),
+          var(--purple)
+        );
+    }
+
+    /* =========================================================
+       ACTIVITY
+    ========================================================= */
+
+    .activity-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .activity {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 10px;
+
+      border-radius: 9px;
+
+      background:
+        rgba(255,255,255,.025);
+    }
+
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+
+      flex: 0 0 auto;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      box-shadow:
+        0 0 10px
+        rgba(78,224,168,.25);
+    }
+
+    .activity-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-info strong {
+      display: block;
+
+      font-size: 9px;
+
+      margin-bottom: 2px;
+    }
+
+    .activity-info span {
+      color: var(--muted);
+
+      font-size: 7px;
+    }
+
+    .activity-time {
+      color: var(--muted);
+
+      font-size: 7px;
+    }
+
+    /* =========================================================
+       EMPTY
+    ========================================================= */
+
+    .empty {
+      padding: 28px 12px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      font-size: 10px;
+
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    .toast {
+      position: fixed;
+
+      right: 20px;
+      bottom: 20px;
+
+      padding: 12px 16px;
+
+      border-radius: 10px;
+
+      background: #1b2232;
+
+      border:
+        1px solid var(--border);
+
+      color: white;
+
+      font-size: 11px;
+
+      transform:
+        translateY(80px);
+
+      opacity: 0;
+
+      transition: .25s;
+
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+    /* =========================================================
+       AI CHATBOX
+    ========================================================= */
+
+    .ai-chat {
+      position: fixed;
+
+      right: 24px;
+      bottom: 24px;
+
+      width:
+        min(390px, calc(100vw - 30px));
+
+      height: 520px;
+
+      display: none;
+
+      flex-direction: column;
+
+      overflow: hidden;
+
+      z-index: 500;
+
+      border:
+        1px solid rgba(134,103,255,.25);
+
+      border-radius: 20px;
+
+      background: #0f1420;
+
+      box-shadow:
+        0 30px 100px rgba(0,0,0,.6),
+        0 0 50px rgba(134,103,255,.08);
+    }
+
+    .ai-chat.open {
+      display: flex;
+    }
+
+    .ai-chat-header {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      padding: 16px 18px;
+
+      border-bottom:
+        1px solid var(--border);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(134,103,255,.12),
+          rgba(67,217,255,.05)
+        );
+    }
+
+    .ai-chat-title {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+    .ai-chat-icon {
+      width: 35px;
+      height: 35px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+    }
+
+    .ai-chat-title strong {
+      display: block;
+
+      font-family: "Space Grotesk";
+
+      font-size: 13px;
+    }
+
+    .ai-chat-title span {
+      display: block;
+
+      margin-top: 2px;
+
+      color: var(--green);
+
+      font-size: 9px;
+    }
+
+    .ai-close {
+      width: 30px;
+      height: 30px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 8px;
+
+      background: transparent;
+
+      color: var(--muted);
+    }
+
+    .ai-close:hover {
+      color: white;
+      background: var(--surface2);
+    }
+
+    .ai-messages {
+      flex: 1;
+
+      overflow-y: auto;
+
+      padding: 16px;
+    }
+
+    .ai-message {
+      display: flex;
+
+      margin-bottom: 12px;
+    }
+
+    .ai-message.user {
+      justify-content: flex-end;
+    }
+
+    .ai-bubble {
+      max-width: 82%;
+
+      padding: 10px 12px;
+
+      border-radius: 13px;
+
+      font-size: 11px;
+
+      line-height: 1.55;
+    }
+
+    .ai-message.bot .ai-bubble {
+      background: var(--surface2);
+
+      border:
+        1px solid var(--border);
+    }
+
+    .ai-message.user .ai-bubble {
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #6448df
+        );
+    }
+
+    .ai-suggestions {
+      display: flex;
+
+      gap: 7px;
+
+      padding:
+        0 14px 10px;
+
+      overflow-x: auto;
+    }
+
+    .ai-suggestion {
+      flex-shrink: 0;
+
+      padding: 7px 10px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 50px;
+
+      background: var(--surface2);
+
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+    .ai-suggestion:hover {
+      color: white;
+      border-color: var(--purple);
+    }
+
+    .ai-input-row {
+      display: flex;
+
+      gap: 8px;
+
+      padding: 12px;
+
+      border-top:
+        1px solid var(--border);
+    }
+
+    .ai-input {
+      min-width: 0;
+
+      flex: 1;
+
+      padding: 10px 12px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 10px;
+
+      outline: none;
+
+      background: var(--surface2);
+
+      color: white;
+
+      font-size: 11px;
+    }
+
+    .ai-input:focus {
+      border-color: var(--purple);
+    }
+
+    .ai-send {
+      width: 40px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: var(--purple);
+
+      color: white;
+    }
+
+    .ai-open-button {
+      position: fixed;
+
+      right: 24px;
+      bottom: 24px;
+
+      z-index: 490;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 9px;
+
+      padding: 13px 17px;
+
+      border:
+        1px solid rgba(134,103,255,.35);
+
+      border-radius: 50px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #6448df
+        );
+
+      color: white;
+
+      box-shadow:
+        0 12px 35px rgba(0,0,0,.4);
+    }
+
+    .ai-open-button:hover {
+      transform: translateY(-2px);
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media(max-width: 900px) {
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .overview-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media(max-width: 650px) {
+
+      .container {
+        width: 94%;
+      }
+
+      .page-header {
+        display: block;
+      }
+
+      .header-actions {
+        margin-top: 15px;
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .nav-btn {
+        display: none;
+      }
+
+    }
+
+    @media(max-width: 600px) {
+
+      .ai-chat {
+        right: 15px;
+        bottom: 15px;
+
+        width:
+          calc(100vw - 30px);
+
+        height:
+          min(520px, 75vh);
+      }
+
+      .ai-open-button {
+        right: 15px;
+        bottom: 15px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <!-- =======================================================
+       NAVIGATION
+  ======================================================= -->
+
+  <div class="container">
+
+    <nav class="navbar">
+
+      <a
+        class="logo"
+        href="index.html"
+      >
+
+        <div class="logo-icon">
+          🧭
+        </div>
+
+        CampusCompass
+
+      </a>
+
+
+      <div class="nav-right">
+
+        <button
+          class="nav-btn"
+          onclick="goPlanner()"
+        >
+          My Plan →
+        </button>
+
+        <button
+          class="nav-btn"
+          onclick="goProgress()"
+        >
+          Progress →
+        </button>
+
+        <div
+          class="avatar"
+          id="avatar"
+        >
+          S
+        </div>
+
+      </div>
+
+    </nav>
+
+  </div>
+
+
+  <!-- =======================================================
+       MAIN
+  ======================================================= -->
+
+  <main>
+
+    <div class="container">
+
+
+      <!-- HEADER -->
+
+      <section class="page-header">
+
+        <div>
+
+          <div class="eyebrow">
+            Your Student OS
+          </div>
+
+          <h1 id="welcomeTitle">
+            Welcome back 👋
+          </h1>
+
+          <p id="headerDescription">
+            Here's what's happening with your journey today.
+          </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+          <button
+            class="action-btn"
+            onclick="goPlanner()"
+          >
+            Open Planner
+          </button>
+
+          <button
+            class="action-btn"
+            onclick="goProgress()"
+          >
+            View Progress
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           OVERVIEW
+      ===================================================== -->
+
+      <section class="overview-grid">
+
+
+        <div class="overview-card primary">
+
+          <div class="card-label">
+            Overall Progress
+          </div>
+
+          <div
+            class="big-number"
+            id="overallPercent"
+          >
+            0%
+          </div>
+
+          <div class="card-description">
+            Keep completing tasks to move forward.
+          </div>
+
+          <div class="mini-progress">
+
+            <div
+              class="mini-progress-fill"
+              id="overallBar"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+          <div class="card-label">
+            Completed
+          </div>
+
+          <div
+            class="big-number"
+            id="completedCount"
+          >
+            0
+          </div>
+
+          <div class="card-description">
+            Tasks completed across your plan.
+          </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+          <div class="card-label">
+            Remaining
+          </div>
+
+          <div
+            class="big-number"
+            id="remainingCount"
+          >
+            0
+          </div>
+
+          <div class="card-description">
+            Tasks waiting for your attention.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           DASHBOARD GRID
+      ===================================================== -->
+
+      <div class="dashboard-grid">
+
+
+        <!-- ===================================================
+             LEFT
+        =================================================== -->
+
+        <div>
+
+
+          <!-- TODAY'S TASKS -->
+
+          <section class="card">
+
+            <div class="card-title-row">
+
+              <div class="card-title">
+                Today's Journey
+              </div>
+
+              <button
+                class="card-link"
+                onclick="goPlanner()"
+              >
+                View full plan →
+              </button>
+
+            </div>
+
+
+            <div
+              class="task-list"
+              id="todayTasks"
+            ></div>
+
+          </section>
+
+
+          <!-- JOURNEY -->
+
+          <section class="card">
+
+            <div class="card-title-row">
+
+              <div class="card-title">
+                Your Journey
+              </div>
+
+            </div>
+
+
+            <div
+              class="journey"
+              id="journey"
+            ></div>
+
+          </section>
+
+
+          <!-- ACTIVITY -->
+
+          <section class="card">
+
+            <div class="card-title-row">
+
+              <div class="card-title">
+                Recent Activity
+              </div>
+
+              <button
+                class="card-link"
+                onclick="goProgress()"
+              >
+                View all →
+              </button>
+
+            </div>
+
+
+            <div
+              class="activity-list"
+              id="activity"
+            ></div>
+
+          </section>
+
+        </div>
+
+
+        <!-- ===================================================
+             RIGHT
+        =================================================== -->
+
+        <div>
+
+
+          <!-- NEXT STEP -->
+
+          <section class="card next-step">
+
+            <div class="ai-label">
+              ✦ Recommended next step
+            </div>
+
+            <div
+              class="next-title"
+              id="nextTitle"
+            >
+              Start your first task
+            </div>
+
+            <div
+              class="next-description"
+              id="nextDescription"
+            >
+              Complete a task from your personalized plan to start building momentum.
+            </div>
+
+            <button
+              class="next-button"
+              onclick="handleNextStep()"
+            >
+              Start next step →
+            </button>
+
+          </section>
+
+
+          <!-- GROWTH -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Your Growth
+            </div>
+
+            <div class="progress-list">
+
+
+              <div class="progress-item">
+
+                <div class="progress-top">
+
+                  <span class="progress-name">
+                    Overall roadmap
+                  </span>
+
+                  <span
+                    class="progress-percent"
+                    id="skillOverall"
+                  >
+                    0%
+                  </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                  <div
+                    class="progress-fill"
+                    id="fillOverall"
+                  ></div>
+
+                </div>
+
+              </div>
+
+
+              <div class="progress-item">
+
+                <div class="progress-top">
+
+                  <span class="progress-name">
+                    Technical skills
+                  </span>
+
+                  <span
+                    class="progress-percent"
+                    id="skillTechnical"
+                  >
+                    0%
+                  </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                  <div
+                    class="progress-fill"
+                    id="fillTechnical"
+                  ></div>
+
+                </div>
+
+              </div>
+
+
+              <div class="progress-item">
+
+                <div class="progress-top">
+
+                  <span class="progress-name">
+                    Projects
+                  </span>
+
+                  <span
+                    class="progress-percent"
+                    id="skillProjects"
+                  >
+                    0%
+                  </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                  <div
+                    class="progress-fill"
+                    id="fillProjects"
+                  ></div>
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </section>
+
+
+          <!-- FOCUS -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Your Focus
+            </div>
+
+            <div
+              class="activity-list"
+              id="focusList"
+            ></div>
+
+          </section>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- TOAST -->
+
+  <div
+    class="toast"
+    id="toast"
+  >
+    Dashboard updated
+  </div>
+
+
+  <div
+    class="ai-chat"
+    id="aiChat"
+  >
+
+    <div class="ai-chat-header">
+
+      <div class="ai-chat-title">
+
+        <div class="ai-chat-icon">
+          🤖
+        </div>
+
+        <div>
+
+          <strong>
+            Campus AI
+          </strong>
+
+          <span>
+            ● Online
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="ai-close"
+        onclick="toggleAIChat()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      class="ai-messages"
+      id="aiMessages"
+    >
+
+      <div class="ai-message bot">
+
+        <div class="ai-bubble">
+          Hey! 👋 I'm your CampusCompass AI guide.
+          Ask me what you should do next, how you're
+          progressing, or anything about your journey.
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="ai-suggestions">
+
+      <button
+        class="ai-suggestion"
+        onclick="askAI('What should I do next?')"
+      >
+        What's next?
+      </button>
+
+      <button
+        class="ai-suggestion"
+        onclick="askAI('How is my progress?')"
+      >
+        My progress
+      </button>
+
+      <button
+        class="ai-suggestion"
+        onclick="askAI('Help me with my skills')"
+      >
+        My skills
+      </button>
+
+    </div>
+
+
+    <div class="ai-input-row">
+
+      <input
+        class="ai-input"
+        id="aiInput"
+        type="text"
+        placeholder="Ask your Campus AI..."
+        autocomplete="off"
+      >
+
+      <button
+        class="ai-send"
+        onclick="sendAIMessage()"
+      >
+        →
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* =========================================================
+       DASHBOARD
+       Fully synchronized with campus.js
+    ========================================================= */
+
+
+    let toastTimeout = null;
+
+
+    /* =========================================================
+       PROFILE
+    ========================================================= */
+
+    function renderProfile() {
+
+      const student =
+        ccGetStudent();
+
+
+      if (!student) {
+
+        window.location.href =
+          "onboarding.html";
+
+        return;
+
+      }
+
+
+      const name =
+        student.name ||
+        "Student";
+
+
+      const firstName =
+        name
+          .trim()
+          .split(/\s+/)[0];
+
+
+      const avatar =
+        document.getElementById(
+          "avatar"
+        );
+
+
+      const welcomeTitle =
+        document.getElementById(
+          "welcomeTitle"
+        );
+
+
+      const headerDescription =
+        document.getElementById(
+          "headerDescription"
+        );
+
+
+      if (avatar) {
+
+        avatar.innerText =
+          firstName
+            .charAt(0)
+            .toUpperCase();
+
+      }
+
+
+      if (welcomeTitle) {
+
+        welcomeTitle.innerText =
+          `Welcome back, ${firstName} 👋`;
+
+      }
+
+
+      if (headerDescription) {
+
+        headerDescription.innerText =
+          `${student.course || "Student"} · Goal: ${
+            student.goal ||
+            "Personal growth"
+          } · ${
+            student.dailyTime ||
+            student.time ||
+            60
+          } min/day`;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       OVERVIEW
+    ========================================================= */
+
+    function renderOverview() {
+
+      const tasks =
+        ccGetAllTasks();
+
+
+      const completed =
+        ccGetCompletedTasks();
+
+
+      const total =
+        tasks.length;
+
+
+      const completedCount =
+        completed.length;
+
+
+      const remaining =
+        Math.max(
+          0,
+          total - completedCount
+        );
+
+
+      const percent =
+        ccGetProgress();
+
+
+      const overallPercent =
+        document.getElementById(
+          "overallPercent"
+        );
+
+
+      const completedCountElement =
+        document.getElementById(
+          "completedCount"
+        );
+
+
+      const remainingCountElement =
+        document.getElementById(
+          "remainingCount"
+        );
+
+
+      const overallBar =
+        document.getElementById(
+          "overallBar"
+        );
+
+
+      if (overallPercent) {
+
+        overallPercent.innerText =
+          `${percent}%`;
+
+      }
+
+
+      if (completedCountElement) {
+
+        completedCountElement.innerText =
+          completedCount;
+
+      }
+
+
+      if (remainingCountElement) {
+
+        remainingCountElement.innerText =
+          remaining;
+
+      }
+
+
+      if (overallBar) {
+
+        overallBar.style.width =
+          `${percent}%`;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       TODAY'S TASKS
+    ========================================================= */
+
+    function renderTodayTasks() {
+
+      const container =
+        document.getElementById(
+          "todayTasks"
+        );
+
+
+      if (!container) return;
+
+
+      const plan =
+        ccGetPlan();
+
+
+      if (!plan.length) {
+
+        container.innerHTML = `
+
+          <div class="empty">
+
+            Your personalized plan hasn't been
+            created yet.
+
+            <br><br>
+
+            <button
+              class="action-btn"
+              onclick="goPlanner()"
+            >
+              Open Planner
+            </button>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /*
+       * The first day of the saved plan is treated
+       * as today's visible dashboard plan.
+       */
+
+      const today =
+        plan[0];
+
+
+      const tasks =
+        Array.isArray(today.tasks)
+          ? today.tasks
+          : [];
+
+
+      if (!tasks.length) {
+
+        container.innerHTML = `
+
+          <div class="empty">
+
+            No tasks are available for today.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const state =
+        ccGetTaskState();
+
+
+      container.innerHTML =
+        tasks
+          .map(
+            task => {
+
+              const completed =
+                Boolean(
+                  state[task.id]
+                );
+
+
+              return `
+
+                <div
+                  class="task ${
+                    completed
+                      ? "completed"
+                      : ""
+                  }"
+                >
+
+                  <div
+                    class="task-check"
+                    onclick="toggleTask(
+                      event,
+                      '${ccEscapeHTML(task.id)}'
+                    )"
+                  >
+                    ${
+                      completed
+                        ? "✓"
+                        : ""
+                    }
+                  </div>
+
+
+                  <div class="task-info">
+
+                    <div class="task-title">
+
+                      ${ccEscapeHTML(
+                        task.title ||
+                        "Untitled task"
+                      )}
+
+                    </div>
+
+
+                    <div class="task-meta">
+
+                      ${ccEscapeHTML(
+                        task.category ||
+                        "Task"
+                      )}
+
+                      ·
+
+                      ${Number(
+                        task.duration || 0
+                      )}
+
+                      min
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="task-status">
+
+                    ${
+                      completed
+                        ? "Done"
+                        : "Open"
+                    }
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =========================================================
+       TOGGLE TASK
+    ========================================================= */
+
+    function toggleTask(
+      event,
+      taskId
+    ) {
+
+      if (event) {
+
+        event.stopPropagation();
+
+      }
+
+
+      const task =
+        ccGetAllTasks()
+          .find(
+            item =>
+              String(item.id) ===
+              String(taskId)
+          );
+
+
+      if (!task) {
+
+        return;
+
+      }
+
+
+      const completed =
+        ccToggleTask(
+          task.id
+        );
+
+
+      /*
+       * Notify every CampusCompass page/component
+       * that shared data changed.
+       */
+
+      ccNotifyChange();
+
+
+      renderAll();
+
+
+      showToast(
+        completed
+          ? "Task completed! 🎉"
+          : "Task marked incomplete."
+      );
+
+    }
+
+
+    /* =========================================================
+       NEXT STEP
+    ========================================================= */
+
+    function renderNextStep() {
+
+      const title =
+        document.getElementById(
+          "nextTitle"
+        );
+
+
+      const description =
+        document.getElementById(
+          "nextDescription"
+        );
+
+
+      if (!title || !description) {
+        return;
+      }
+
+
+      const tasks =
+        ccGetAllTasks();
+
+
+      const completed =
+        ccGetCompletedTasks();
+
+
+      if (!tasks.length) {
+
+        title.innerText =
+          "Create your personalized plan";
+
+
+        description.innerText =
+          "Your next step will appear here once your planner has tasks to work through.";
+
+        return;
+
+      }
+
+
+      const completedIds =
+        new Set(
+          completed.map(
+            task =>
+              String(task.id)
+          )
+        );
+
+
+      const next =
+        tasks.find(
+          task =>
+            !completedIds.has(
+              String(task.id)
+            )
+        );
+
+
+      if (!next) {
+
+        title.innerText =
+          "You've completed your plan 🎉";
+
+
+        description.innerText =
+          "Every task in your current roadmap is complete. Review your progress and decide what you want to tackle next.";
+
+        return;
+
+      }
+
+
+      title.innerText =
+        next.title ||
+        "Continue your journey";
+
+
+      description.innerText =
+        `${next.category || "Task"} · ${
+          Number(next.duration || 0)
+        } minutes. Keep moving through your plan one step at a time.`;
+
+    }
+
+
+    /* =========================================================
+       GROWTH
+    ========================================================= */
+
+    function renderGrowth() {
+
+      const skills =
+        ccGetSkillProgress();
+
+
+      setProgress(
+        "skillOverall",
+        "fillOverall",
+        skills.overall
+      );
+
+
+      setProgress(
+        "skillTechnical",
+        "fillTechnical",
+        skills.technical
+      );
+
+
+      setProgress(
+        "skillProjects",
+        "fillProjects",
+        skills.projects
+      );
+
+    }
+
+
+    function setProgress(
+      textId,
+      fillId,
+      value
+    ) {
+
+      const safe =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            Number(value) || 0
+          )
+        );
+
+
+      const text =
+        document.getElementById(
+          textId
+        );
+
+
+      const fill =
+        document.getElementById(
+          fillId
+        );
+
+
+      if (text) {
+
+        text.innerText =
+          `${Math.round(safe)}%`;
+
+      }
+
+
+      if (fill) {
+
+        fill.style.width =
+          `${safe}%`;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       JOURNEY
+    ========================================================= */
+
+    function renderJourney() {
+
+      const container =
+        document.getElementById(
+          "journey"
+        );
+
+
+      if (!container) return;
+
+
+      const tasks =
+        ccGetAllTasks();
+
+
+      const completed =
+        ccGetCompletedTasks();
+
+
+      const progress =
+        tasks.length
+          ? completed.length /
+            tasks.length
+          : 0;
+
+
+      const stage =
+        Math.min(
+          4,
+          Math.floor(
+            progress * 5
+          )
+        );
+
+
+      const stages = [
+
+        {
+          icon: "📚",
+          label: "Foundations"
+        },
+
+        {
+          icon: "🧠",
+          label: "Core Skills"
+        },
+
+        {
+          icon: "🚀",
+          label: "Projects"
+        },
+
+        {
+          icon: "💼",
+          label: "Internship"
+        },
+
+        {
+          icon: "🎓",
+          label: "Career"
+        }
+
+      ];
+
+
+      let html = "";
+
+
+      stages.forEach(
+        (
+          item,
+          index
+        ) => {
+
+          const done =
+            index < stage;
+
+
+          const active =
+            index === stage;
+
+
+          html += `
+
+            <div
+              class="
+                journey-node
+                ${done ? "done" : ""}
+                ${active ? "active" : ""}
+              "
+            >
+
+              <div class="journey-circle">
+
+                ${
+                  done
+                    ? "✓"
+                    : item.icon
+                }
+
+              </div>
+
+
+              <div class="journey-label">
+
+                ${ccEscapeHTML(
+                  item.label
+                )}
+
+              </div>
+
+            </div>
+
+          `;
+
+
+          if (
+            index <
+            stages.length - 1
+          ) {
+
+            html += `
+
+              <div
+                class="
+                  journey-line
+                  ${
+                    index < stage
+                      ? "done"
+                      : ""
+                  }
+                "
+              ></div>
+
+            `;
+
+          }
+
+        }
+      );
+
+
+      container.innerHTML =
+        html;
+
+    }
+
+
+    /* =========================================================
+       ACTIVITY
+    ========================================================= */
+
+    function renderActivity() {
+
+      const container =
+        document.getElementById(
+          "activity"
+        );
+
+
+      if (!container) return;
+
+
+      const completed =
+        ccGetCompletedTasks();
+
+
+      if (!completed.length) {
+
+        container.innerHTML = `
+
+          <div class="empty">
+
+            No completed tasks yet.
+
+            <br>
+
+            Complete your first task and
+            your activity will appear here.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /*
+       * Task completion state is stored centrally.
+       * Without timestamps, the dashboard uses the
+       * task order as the available activity ordering.
+       */
+
+      const recent =
+        completed
+          .slice()
+          .reverse()
+          .slice(
+            0,
+            5
+          );
+
+
+      container.innerHTML =
+        recent
+          .map(
+            task => `
+
+              <div class="activity">
+
+                <div class="activity-dot"></div>
+
+
+                <div class="activity-info">
+
+                  <strong>
+
+                    ${ccEscapeHTML(
+                      task.title ||
+                      "Completed task"
+                    )}
+
+                  </strong>
+
+
+                  <span>
+
+                    ${ccEscapeHTML(
+                      task.category ||
+                      "Task"
+                    )}
+
+                    ·
+
+                    ${Number(
+                      task.duration || 0
+                    )}
+
+                    minutes
+
+                  </span>
+
+                </div>
+
+
+                <div class="activity-time">
+                  ✓ Done
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+    }
+
+
+    /* =========================================================
+       FOCUS
+    ========================================================= */
+
+    function renderFocus() {
+
+      const container =
+        document.getElementById(
+          "focusList"
+        );
+
+
+      if (!container) return;
+
+
+      const student =
+        ccGetStudent();
+
+
+      if (!student) {
+        return;
+      }
+
+
+      const interests =
+        Array.isArray(
+          student.interests
+        )
+          ? student.interests
+          : [];
+
+
+      const focusItems = [
+
+        {
+          icon: "🎯",
+
+          title:
+            student.goal ||
+            "Personal Growth",
+
+          text:
+            "Primary goal"
+
+        },
+
+
+        {
+          icon: "📚",
+
+          title:
+            student.course ||
+            "Your studies",
+
+          text:
+            "Current field"
+
+        },
+
+
+        {
+          icon: "⏱",
+
+          title:
+            `${
+              student.dailyTime ||
+              student.time ||
+              60
+            } min/day`,
+
+          text:
+            "Available learning time"
+
+        }
+
+      ];
+
+
+      if (
+        interests.length
+      ) {
+
+        focusItems.push({
+
+          icon: "🧠",
+
+          title:
+            interests[0],
+
+          text:
+            "Main interest"
+
+        });
+
+      }
+
+
+      container.innerHTML =
+        focusItems
+          .map(
+            item => `
+
+              <div class="activity">
+
+                <div
+                  class="journey-circle"
+                  style="
+                    width:28px;
+                    height:28px;
+                    margin:0;
+                    flex:0 0 auto;
+                    font-size:12px;
+                  "
+                >
+
+                  ${ccEscapeHTML(
+                    item.icon
+                  )}
+
+                </div>
+
+
+                <div class="activity-info">
+
+                  <strong>
+
+                    ${ccEscapeHTML(
+                      item.title
+                    )}
+
+                  </strong>
+
+
+                  <span>
+
+                    ${ccEscapeHTML(
+                      item.text
+                    )}
+
+                  </span>
+
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+    }
+
+
+    /* =========================================================
+       NEXT STEP ACTION
+    ========================================================= */
+
+    function handleNextStep() {
+
+      const tasks =
+        ccGetAllTasks();
+
+
+      if (!tasks.length) {
+
+        goPlanner();
+
+        return;
+
+      }
+
+
+      const completed =
+        ccGetCompletedTasks();
+
+
+      if (
+        completed.length >=
+        tasks.length
+      ) {
+
+        goProgress();
+
+        return;
+
+      }
+
+
+      goPlanner();
+
+    }
+
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+
+    function goPlanner() {
+
+      window.location.href =
+        "planner.html";
+
+    }
+
+
+    function goProgress() {
+
+      window.location.href =
+        "progress.html";
+
+    }
+
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    function showToast(
+      message
+    ) {
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+
+      if (!toast) return;
+
+
+      toast.innerText =
+        message;
+
+
+      toast.classList.add(
+        "show"
+      );
+
+
+      clearTimeout(
+        toastTimeout
+      );
+
+
+      toastTimeout =
+        setTimeout(
+          () => {
+
+            toast.classList.remove(
+              "show"
+            );
+
+          },
+          2500
+        );
+
+    }
+
+
+    /* =========================================================
+       FULL DASHBOARD RENDER
+    ========================================================= */
+
+    function renderAll() {
+
+      renderProfile();
+
+      renderOverview();
+
+      renderTodayTasks();
+
+      renderNextStep();
+
+      renderGrowth();
+
+      renderJourney();
+
+      renderActivity();
+
+      renderFocus();
+
+    }
+
+
+    /* =========================================================
+       CROSS-PAGE REFRESH
+    ========================================================= */
+
+    window.refreshCampusCompass =
+      function() {
+
+        renderAll();
+
+      };
+
+
+    /* =========================================================
+       CAMPUSCOMPASS EVENT
+    ========================================================= */
+
+    window.addEventListener(
+      "campusCompassUpdated",
+      () => {
+
+        renderAll();
+
+      }
+    );
+
+
+    /* =========================================================
+       AI CHAT
+    ========================================================= */
+
+    function toggleAIChat() {
+
+      const chat =
+        document.getElementById(
+          "aiChat"
+        );
+
+
+      const button =
+        document.getElementById(
+          "aiOpenButton"
+        );
+
+
+      if (!chat) return;
+
+
+      const isOpen =
+        chat.classList.toggle(
+          "open"
+        );
+
+
+      if (button) {
+
+        button.style.display =
+          isOpen
+            ? "none"
+            : "flex";
+
+      }
+
+
+      if (isOpen) {
+
+        setTimeout(
+          () => {
+
+            document
+              .getElementById(
+                "aiInput"
+              )
+              ?.focus();
+
+          },
+          100
+        );
+
+      }
+
+    }
+
+
+    function addAIMessage(
+      text,
+      type = "bot"
+    ) {
+
+      const container =
+        document.getElementById(
+          "aiMessages"
+        );
+
+
+      if (!container) return;
+
+
+      const message =
+        document.createElement(
+          "div"
+        );
+
+
+      message.className =
+        `ai-message ${type}`;
+
+
+      const bubble =
+        document.createElement(
+          "div"
+        );
+
+
+      bubble.className =
+        "ai-bubble";
+
+
+      bubble.innerText =
+        text;
+
+
+      message.appendChild(
+        bubble
+      );
+
+
+      container.appendChild(
+        message
+      );
+
+
+      container.scrollTop =
+        container.scrollHeight;
+
+    }
+
+
+    function askAI(
+      question
+    ) {
+
+      const input =
+        document.getElementById(
+          "aiInput"
+        );
+
+
+      if (input) {
+
+        input.value =
+          question;
+
+      }
+
+
+      sendAIMessage();
+
+    }
+
+
+    function sendAIMessage() {
+
+      const input =
+        document.getElementById(
+          "aiInput"
+        );
+
+
+      if (!input) return;
+
+
+      const message =
+        input.value.trim();
+
+
+      if (!message) return;
+
+
+      addAIMessage(
+        message,
+        "user"
+      );
+
+
+      input.value =
+        "";
+
+
+      /*
+       * ccAIReply() comes from campus.js.
+       * Therefore the AI sees the same student,
+       * plan, task state and progress used by
+       * the rest of the dashboard.
+       */
+
+      setTimeout(
+        () => {
+
+          const response =
+            ccAIReply(
+              message
+            );
+
+
+          addAIMessage(
+            response.text,
+            "bot"
+          );
+
+
+          if (
+            response.action ===
+            "planner"
+          ) {
+
+            setTimeout(
+              () => {
+
+                const go =
+                  confirm(
+                    "Would you like to open your planner?"
+                  );
+
+
+                if (go) {
+
+                  goPlanner();
+
+                }
+
+              },
+              150
+            );
+
+          }
+
+
+          if (
+            response.action ===
+            "progress"
+          ) {
+
+            setTimeout(
+              () => {
+
+                const go =
+                  confirm(
+                    "Would you like to view your progress?"
+                  );
+
+
+                if (go) {
+
+                  goProgress();
+
+                }
+
+              },
+              150
+            );
+
+          }
+
+
+          if (
+            response.action ===
+            "onboarding"
+          ) {
+
+            setTimeout(
+              () => {
+
+                window.location.href =
+                  "onboarding.html";
+
+              },
+              150
+            );
+
+          }
+
+        },
+        300
+      );
+
+    }
+
+
+    /* =========================================================
+       ENTER KEY FOR AI
+    ========================================================= */
+
+    document
+      .getElementById(
+        "aiInput"
+      )
+      ?.addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key ===
+            "Enter"
+          ) {
+
+            event.preventDefault();
+
+            sendAIMessage();
+
+          }
+
+        }
+      );
+
+
+    /* =========================================================
+       INITIALIZE
+    ========================================================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        const student =
+          ccGetStudent();
+
+
+        if (!student) {
+
+          window.location.href =
+            "onboarding.html";
+
+          return;
+
+        }
+
+
+        renderAll();
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,2551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="ai-chat.css">
+<script src="ai-chat.js"></script>
+
+
+  <script src="campus.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CampusCompass — Progress</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* =====================================================
+       RESET + VARIABLES
+    ===================================================== */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #070910;
+      --surface: #101522;
+      --surface2: #151b2a;
+      --surface3: #20283a;
+
+      --purple: #8065ff;
+      --purple-light: #aa99ff;
+      --cyan: #42d9ff;
+      --green: #4ee0a8;
+      --yellow: #ffd166;
+      --red: #ff7180;
+
+      --text: #f6f7fb;
+      --muted: #929aaa;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 75% -10%,
+          rgba(128, 101, 255, 0.16),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at -10% 50%,
+          rgba(66, 217, 255, 0.05),
+          transparent 30%
+        ),
+        var(--bg);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+    }
+
+
+    /* =====================================================
+       NAVBAR
+    ===================================================== */
+
+    .navbar {
+      height: 76px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      color: white;
+      text-decoration: none;
+
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .nav-btn {
+      border: 1px solid var(--border);
+
+      background: transparent;
+
+      color: var(--muted);
+
+      padding: 9px 13px;
+
+      border-radius: 9px;
+
+      font-size: 11px;
+
+      transition: 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: white;
+      background: var(--surface);
+      border-color: rgba(128, 101, 255, 0.3);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      font-weight: 700;
+    }
+
+
+    /* =====================================================
+       MAIN
+    ===================================================== */
+
+    main {
+      padding: 40px 0 80px;
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--purple-light);
+
+      text-transform: uppercase;
+
+      letter-spacing: 2px;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      margin-bottom: 9px;
+    }
+
+    h1 {
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: clamp(32px, 5vw, 48px);
+
+      letter-spacing: -1.8px;
+
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+
+      max-width: 650px;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       HERO PROGRESS
+    ===================================================== */
+
+    .progress-hero {
+      position: relative;
+
+      overflow: hidden;
+
+      display: grid;
+
+      grid-template-columns: 190px 1fr;
+
+      gap: 30px;
+
+      align-items: center;
+
+      margin-bottom: 18px;
+
+      padding: 25px;
+
+      border-radius: 18px;
+
+      border: 1px solid rgba(128, 101, 255, 0.2);
+
+      background:
+        linear-gradient(
+          120deg,
+          rgba(128, 101, 255, 0.14),
+          rgba(66, 217, 255, 0.05)
+        );
+    }
+
+    .progress-hero::after {
+      content: "✦";
+
+      position: absolute;
+
+      right: 25px;
+      top: -25px;
+
+      font-size: 110px;
+
+      color: rgba(128, 101, 255, 0.06);
+
+      pointer-events: none;
+    }
+
+    .progress-ring {
+      position: relative;
+
+      width: 150px;
+      height: 150px;
+
+      margin: auto;
+    }
+
+    .progress-ring svg {
+      width: 100%;
+      height: 100%;
+
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+
+      stroke: var(--surface3);
+
+      stroke-width: 10;
+    }
+
+    .ring-value {
+      fill: none;
+
+      stroke: url(#progressGradient);
+
+      stroke-width: 10;
+
+      stroke-linecap: round;
+
+      stroke-dasharray: 408.4;
+
+      stroke-dashoffset: 408.4;
+
+      transition: stroke-dashoffset 0.8s ease;
+    }
+
+    .ring-center {
+      position: absolute;
+
+      inset: 0;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+    .ring-percent {
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: 29px;
+
+      font-weight: 700;
+    }
+
+    .ring-label {
+      color: var(--muted);
+
+      font-size: 9px;
+
+      margin-top: 2px;
+    }
+
+    .hero-copy {
+      position: relative;
+
+      z-index: 1;
+    }
+
+    .hero-copy .small-label {
+      color: var(--purple-light);
+
+      font-size: 9px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 1.5px;
+
+      font-weight: 700;
+
+      margin-bottom: 7px;
+    }
+
+    .hero-copy h2 {
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: 22px;
+
+      margin-bottom: 7px;
+    }
+
+    .hero-copy p {
+      color: var(--muted);
+
+      font-size: 11px;
+
+      line-height: 1.6;
+
+      max-width: 620px;
+    }
+
+
+    /* =====================================================
+       STATS
+    ===================================================== */
+
+    .stats {
+      display: grid;
+
+      grid-template-columns: repeat(4, 1fr);
+
+      gap: 12px;
+
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      padding: 18px;
+
+      border: 1px solid var(--border);
+
+      border-radius: 14px;
+
+      background: rgba(16, 21, 34, 0.88);
+
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+
+      border-color:
+        rgba(128, 101, 255, 0.25);
+    }
+
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 8px;
+
+      background: rgba(128, 101, 255, 0.09);
+
+      margin-bottom: 12px;
+    }
+
+    .stat-number {
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: 22px;
+
+      font-weight: 700;
+
+      margin-bottom: 3px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+
+    /* =====================================================
+       CONTENT GRID
+    ===================================================== */
+
+    .content-grid {
+      display: grid;
+
+      grid-template-columns: 1fr 340px;
+
+      gap: 18px;
+
+      align-items: start;
+    }
+
+    .card {
+      padding: 19px;
+
+      border: 1px solid var(--border);
+
+      border-radius: 15px;
+
+      background: rgba(16, 21, 34, 0.88);
+    }
+
+    .card + .card {
+      margin-top: 14px;
+    }
+
+    .card-title {
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      margin-bottom: 15px;
+    }
+
+
+    /* =====================================================
+       SKILL PROGRESS
+    ===================================================== */
+
+    .skill {
+      margin-bottom: 17px;
+    }
+
+    .skill:last-child {
+      margin-bottom: 0;
+    }
+
+    .skill-top {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-bottom: 7px;
+    }
+
+    .skill-name {
+      font-size: 10px;
+
+      font-weight: 600;
+    }
+
+    .skill-percent {
+      color: var(--purple-light);
+
+      font-size: 9px;
+
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      width: 100%;
+
+      height: 7px;
+
+      overflow: hidden;
+
+      border-radius: 50px;
+
+      background: var(--surface3);
+    }
+
+    .progress-fill {
+      height: 100%;
+
+      width: 0;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--cyan)
+        );
+
+      transition: width 0.7s ease;
+    }
+
+
+    /* =====================================================
+       ACTIVITY
+    ===================================================== */
+
+    .activity {
+      display: grid;
+
+      gap: 11px;
+    }
+
+    .activity-row {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 10px;
+
+      border-radius: 9px;
+
+      background: rgba(255, 255, 255, 0.025);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.045);
+    }
+
+    .activity-dot {
+      width: 9px;
+      height: 9px;
+
+      flex: 0 0 auto;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      box-shadow:
+        0 0 10px
+        rgba(78, 224, 168, 0.3);
+    }
+
+    .activity-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-info strong {
+      display: block;
+
+      font-size: 10px;
+
+      margin-bottom: 2px;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+      white-space: nowrap;
+    }
+
+    .activity-info span {
+      color: var(--muted);
+
+      font-size: 8px;
+    }
+
+    .activity-time {
+      color: var(--muted);
+
+      font-size: 8px;
+
+      white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       MILESTONES
+    ===================================================== */
+
+    .milestones {
+      display: grid;
+
+      gap: 13px;
+    }
+
+    .milestone {
+      display: flex;
+
+      gap: 10px;
+    }
+
+    .milestone-line {
+      position: relative;
+
+      display: flex;
+
+      justify-content: center;
+
+      width: 12px;
+
+      flex: 0 0 12px;
+    }
+
+    .milestone-line::after {
+      content: "";
+
+      position: absolute;
+
+      top: 12px;
+      bottom: -15px;
+
+      width: 1px;
+
+      background: var(--surface3);
+    }
+
+    .milestone:last-child
+    .milestone-line::after {
+      display: none;
+    }
+
+    .milestone-dot {
+      width: 10px;
+      height: 10px;
+
+      margin-top: 2px;
+
+      z-index: 1;
+
+      border-radius: 50%;
+
+      background: var(--surface3);
+
+      border: 2px solid #596176;
+    }
+
+    .milestone.completed
+    .milestone-dot {
+      background: var(--green);
+
+      border-color: var(--green);
+    }
+
+    .milestone.active
+    .milestone-dot {
+      background: var(--purple);
+
+      border-color: var(--purple);
+
+      box-shadow:
+        0 0 0 4px
+        rgba(128, 101, 255, 0.1);
+    }
+
+    .milestone-content {
+      flex: 1;
+    }
+
+    .milestone-content strong {
+      display: block;
+
+      font-size: 10px;
+
+      line-height: 1.4;
+    }
+
+    .milestone-content span {
+      display: block;
+
+      color: var(--muted);
+
+      font-size: 8px;
+
+      margin-top: 2px;
+    }
+
+
+    /* =====================================================
+       WEEK SUMMARY
+    ===================================================== */
+
+    .week-list {
+      display: grid;
+
+      gap: 9px;
+    }
+
+    .week-row {
+      display: flex;
+
+      align-items: center;
+
+      gap: 11px;
+
+      padding: 11px;
+
+      border-radius: 10px;
+
+      background: rgba(255, 255, 255, 0.025);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.045);
+    }
+
+    .week-number {
+      width: 29px;
+      height: 29px;
+
+      display: grid;
+      place-items: center;
+
+      flex: 0 0 auto;
+
+      border-radius: 8px;
+
+      color: var(--purple-light);
+
+      background: rgba(128, 101, 255, 0.09);
+
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: 10px;
+
+      font-weight: 700;
+    }
+
+    .week-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .week-info strong {
+      display: block;
+
+      font-size: 10px;
+
+      margin-bottom: 2px;
+    }
+
+    .week-info span {
+      color: var(--muted);
+
+      font-size: 8px;
+    }
+
+    .week-percent {
+      color: var(--cyan);
+
+      font-family: "Space Grotesk", sans-serif;
+
+      font-size: 10px;
+
+      font-weight: 700;
+    }
+
+
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
+
+    .empty {
+      padding: 35px 15px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      font-size: 11px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    .toast {
+      position: fixed;
+
+      right: 20px;
+      bottom: 20px;
+
+      padding: 12px 16px;
+
+      border-radius: 10px;
+
+      background: #1b2232;
+
+      border: 1px solid var(--border);
+
+      color: white;
+
+      font-size: 11px;
+
+      transform: translateY(80px);
+
+      opacity: 0;
+
+      transition: 0.25s;
+
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+
+      transform: translateY(0);
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media (max-width: 650px) {
+
+      .container {
+        width: 94%;
+      }
+
+      .navbar {
+        height: 68px;
+      }
+
+      .progress-hero {
+        grid-template-columns: 1fr;
+
+        text-align: center;
+      }
+
+      .hero-copy p {
+        margin: auto;
+      }
+
+      .stats {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .nav-btn {
+        display: none;
+      }
+
+      .page-header {
+        margin-bottom: 22px;
+      }
+
+      main {
+        padding-top: 30px;
+      }
+
+    }
+
+    @media (max-width: 420px) {
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-hero {
+        padding: 20px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .ring-percent {
+        font-size: 26px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       NAVIGATION
+  ===================================================== -->
+
+  <div class="container">
+
+    <nav class="navbar">
+
+      <a
+        class="logo"
+        href="index.html"
+        aria-label="CampusCompass home"
+      >
+
+        <div class="logo-icon">
+          🧭
+        </div>
+
+        CampusCompass
+
+      </a>
+
+
+      <div class="nav-right">
+
+        <button
+          class="nav-btn"
+          type="button"
+          onclick="goDashboard()"
+        >
+          ← Dashboard
+        </button>
+
+        <button
+          class="nav-btn"
+          type="button"
+          onclick="goPlanner()"
+        >
+          My Plan →
+        </button>
+
+        <div
+          class="avatar"
+          id="avatar"
+          aria-label="Student profile"
+        >
+          S
+        </div>
+
+      </div>
+
+    </nav>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       MAIN CONTENT
+  ===================================================== -->
+
+  <main>
+
+    <div class="container">
+
+
+      <!-- =================================================
+           PAGE HEADER
+      ================================================= -->
+
+      <section class="page-header">
+
+        <div class="eyebrow">
+          Your growth
+        </div>
+
+        <h1>
+          Progress
+        </h1>
+
+        <p id="headerDescription">
+          See how far you've come and what you've accomplished.
+        </p>
+
+      </section>
+
+
+
+      <!-- =================================================
+           HERO PROGRESS
+      ================================================= -->
+
+      <section class="progress-hero">
+
+
+        <div class="progress-ring">
+
+          <svg
+            viewBox="0 0 150 150"
+            aria-label="Overall progress"
+          >
+
+            <defs>
+
+              <linearGradient
+                id="progressGradient"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="1"
+              >
+
+                <stop
+                  offset="0%"
+                  stop-color="#8065ff"
+                />
+
+                <stop
+                  offset="100%"
+                  stop-color="#42d9ff"
+                />
+
+              </linearGradient>
+
+            </defs>
+
+
+            <circle
+              class="ring-bg"
+              cx="75"
+              cy="75"
+              r="65"
+            />
+
+
+            <circle
+              class="ring-value"
+              id="ringValue"
+              cx="75"
+              cy="75"
+              r="65"
+            />
+
+          </svg>
+
+
+          <div class="ring-center">
+
+            <div
+              class="ring-percent"
+              id="overallPercent"
+            >
+              0%
+            </div>
+
+            <div class="ring-label">
+              Complete
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="hero-copy">
+
+          <div class="small-label">
+            ✦ Overall Progress
+          </div>
+
+          <h2 id="progressHeadline">
+            Your journey is underway.
+          </h2>
+
+          <p id="progressMessage">
+            Complete tasks in your personalized plan
+            to build momentum and track your growth.
+          </p>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           STAT CARDS
+      ================================================= -->
+
+      <section class="stats">
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ✓
+          </div>
+
+          <div
+            class="stat-number"
+            id="completedCount"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Tasks completed
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            📋
+          </div>
+
+          <div
+            class="stat-number"
+            id="totalCount"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Total tasks
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ⏱
+          </div>
+
+          <div
+            class="stat-number"
+            id="minutesCompleted"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Minutes completed
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            🎯
+          </div>
+
+          <div
+            class="stat-number"
+            id="projectCount"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Projects completed
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           CONTENT GRID
+      ================================================= -->
+
+      <div class="content-grid">
+
+
+        <!-- ===============================================
+             LEFT COLUMN
+        =============================================== -->
+
+        <div>
+
+
+          <!-- SKILL PROGRESS -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Skill Progress
+            </div>
+
+
+            <div class="skill">
+
+              <div class="skill-top">
+
+                <span class="skill-name">
+                  Overall roadmap
+                </span>
+
+                <span
+                  class="skill-percent"
+                  id="skillOverall"
+                >
+                  0%
+                </span>
+
+              </div>
+
+              <div class="progress-bar">
+
+                <div
+                  class="progress-fill"
+                  id="fillOverall"
+                ></div>
+
+              </div>
+
+            </div>
+
+
+            <div class="skill">
+
+              <div class="skill-top">
+
+                <span class="skill-name">
+                  Technical skills
+                </span>
+
+                <span
+                  class="skill-percent"
+                  id="skillTechnical"
+                >
+                  0%
+                </span>
+
+              </div>
+
+              <div class="progress-bar">
+
+                <div
+                  class="progress-fill"
+                  id="fillTechnical"
+                ></div>
+
+              </div>
+
+            </div>
+
+
+            <div class="skill">
+
+              <div class="skill-top">
+
+                <span class="skill-name">
+                  Projects
+                </span>
+
+                <span
+                  class="skill-percent"
+                  id="skillProjects"
+                >
+                  0%
+                </span>
+
+              </div>
+
+              <div class="progress-bar">
+
+                <div
+                  class="progress-fill"
+                  id="fillProjects"
+                ></div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+
+          <!-- RECENT ACTIVITY -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Recent Activity
+            </div>
+
+            <div
+              class="activity"
+              id="activity"
+            ></div>
+
+          </section>
+
+
+
+          <!-- WEEKLY BREAKDOWN -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Weekly Breakdown
+            </div>
+
+            <div
+              class="week-list"
+              id="weekList"
+            ></div>
+
+          </section>
+
+        </div>
+
+
+
+        <!-- ===============================================
+             RIGHT COLUMN
+        =============================================== -->
+
+        <div>
+
+
+          <!-- MILESTONES -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Milestones
+            </div>
+
+            <div
+              class="milestones"
+              id="milestones"
+            ></div>
+
+          </section>
+
+
+
+          <!-- FOCUS -->
+
+          <section class="card">
+
+            <div class="card-title">
+              Your Focus
+            </div>
+
+            <div
+              class="activity"
+              id="focusList"
+            ></div>
+
+          </section>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- =====================================================
+       TOAST
+  ===================================================== -->
+
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  >
+    Progress updated
+  </div>
+
+
+
+  <script>
+
+    /*
+    =========================================================
+    CAMPUSCOMPASS — PROGRESS
+    =========================================================
+    */
+
+
+    let profile = null;
+
+    let plan = [];
+
+    let taskState = {};
+
+
+
+    /* =====================================================
+       LOAD DATA
+    ===================================================== */
+
+    function loadData() {
+
+      const profileData =
+        localStorage.getItem(
+          "campusCompassStudent"
+        );
+
+
+      if (!profileData) {
+
+        window.location.href =
+          "onboarding.html";
+
+        return false;
+
+      }
+
+
+      try {
+
+        profile =
+          JSON.parse(profileData);
+
+      } catch (error) {
+
+        console.error(
+          "Unable to read student profile:",
+          error
+        );
+
+        window.location.href =
+          "onboarding.html";
+
+        return false;
+
+      }
+
+
+      const planData =
+        localStorage.getItem(
+          "campusCompassPlan"
+        );
+
+
+      if (planData) {
+
+        try {
+
+          plan =
+            JSON.parse(planData);
+
+          if (!Array.isArray(plan)) {
+            plan = [];
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Unable to read plan:",
+            error
+          );
+
+          plan = [];
+
+        }
+
+      }
+
+
+      const savedState =
+        localStorage.getItem(
+          "campusCompassPlannerTasks"
+        );
+
+
+      if (savedState) {
+
+        try {
+
+          taskState =
+            JSON.parse(savedState);
+
+          if (
+            !taskState ||
+            typeof taskState !== "object"
+          ) {
+            taskState = {};
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Unable to read task state:",
+            error
+          );
+
+          taskState = {};
+
+        }
+
+      }
+
+
+      return true;
+
+    }
+
+
+
+    /* =====================================================
+       PROFILE
+    ===================================================== */
+
+    function renderProfile() {
+
+      const name =
+        profile.name ||
+        "Student";
+
+
+      const firstName =
+        String(name)
+          .trim()
+          .split(/\s+/)[0] ||
+        "Student";
+
+
+      document.getElementById(
+        "avatar"
+      ).innerText =
+        firstName
+          .charAt(0)
+          .toUpperCase();
+
+
+      const goal =
+        profile.goal ||
+        "your goals";
+
+
+      document.getElementById(
+        "headerDescription"
+      ).innerText =
+        `Track your progress toward ${goal} and see the work you've completed.`;
+
+    }
+
+
+
+    /* =====================================================
+       TASK HELPERS
+    ===================================================== */
+
+    function getAllTasks() {
+
+      return plan.flatMap(
+        day =>
+          Array.isArray(day.tasks)
+            ? day.tasks
+            : []
+      );
+
+    }
+
+
+    function getCompletedTasks() {
+
+      return getAllTasks()
+        .filter(
+          task =>
+            Boolean(
+              taskState[
+                task.id
+              ]
+            )
+        );
+
+    }
+
+
+    function normalizeCategory(value) {
+
+      return String(value || "")
+        .toLowerCase()
+        .replace(
+          /s$/,
+          ""
+        );
+
+    }
+
+
+
+    /* =====================================================
+       OVERALL PROGRESS
+    ===================================================== */
+
+    function renderOverallProgress() {
+
+      const all =
+        getAllTasks();
+
+
+      const completed =
+        getCompletedTasks();
+
+
+      const total =
+        all.length;
+
+
+      const completedCount =
+        completed.length;
+
+
+      const percent =
+        total
+          ? Math.round(
+              completedCount /
+              total *
+              100
+            )
+          : 0;
+
+
+      document.getElementById(
+        "overallPercent"
+      ).innerText =
+        `${percent}%`;
+
+
+      document.getElementById(
+        "completedCount"
+      ).innerText =
+        completedCount;
+
+
+      document.getElementById(
+        "totalCount"
+      ).innerText =
+        total;
+
+
+      const circumference =
+        2 *
+        Math.PI *
+        65;
+
+
+      const offset =
+        circumference -
+        (
+          percent / 100
+        ) *
+        circumference;
+
+
+      document.getElementById(
+        "ringValue"
+      ).style.strokeDashoffset =
+        offset;
+
+
+      let headline =
+        "Your journey is underway.";
+
+
+      let message =
+        "Complete tasks in your personalized plan to build momentum and track your growth.";
+
+
+      if (percent === 100) {
+
+        headline =
+          "You completed your roadmap! 🎉";
+
+        message =
+          "You've finished every task in this plan. Take a moment to reflect on what you've learned and decide what's next.";
+
+      }
+
+      else if (percent >= 75) {
+
+        headline =
+          "You're almost there.";
+
+        message =
+          "You've completed most of your roadmap. Keep your momentum going and finish the remaining tasks.";
+
+      }
+
+      else if (percent >= 50) {
+
+        headline =
+          "You're halfway there.";
+
+        message =
+          "You've built meaningful momentum. Keep showing up and turning small actions into progress.";
+
+      }
+
+      else if (percent >= 25) {
+
+        headline =
+          "You're building momentum.";
+
+        message =
+          "You've made a solid start. Stay consistent and keep taking the next manageable step.";
+
+      }
+
+
+      document.getElementById(
+        "progressHeadline"
+      ).innerText =
+        headline;
+
+
+      document.getElementById(
+        "progressMessage"
+      ).innerText =
+        message;
+
+    }
+
+
+
+    /* =====================================================
+       TIME + PROJECT STATS
+    ===================================================== */
+
+    function renderStats() {
+
+      const completed =
+        getCompletedTasks();
+
+
+      const minutes =
+        completed.reduce(
+          (
+            total,
+            task
+          ) =>
+            total +
+            Number(
+              task.duration || 0
+            ),
+          0
+        );
+
+
+      const projects =
+        completed.filter(
+          task =>
+            normalizeCategory(
+              task.category
+            ) === "project"
+        ).length;
+
+
+      document.getElementById(
+        "minutesCompleted"
+      ).innerText =
+        minutes;
+
+
+      document.getElementById(
+        "projectCount"
+      ).innerText =
+        projects;
+
+    }
+
+
+
+    /* =====================================================
+       SKILL PROGRESS
+    ===================================================== */
+
+    function renderSkills() {
+
+      const all =
+        getAllTasks();
+
+
+      const completed =
+        getCompletedTasks();
+
+
+      const overall =
+        all.length
+          ? Math.round(
+              completed.length /
+              all.length *
+              100
+            )
+          : 0;
+
+
+      const technical =
+        profile.progress &&
+        typeof profile.progress.technical === "number"
+
+          ? profile.progress.technical
+
+          : Math.min(
+              100,
+              20 +
+              completed.length * 5
+            );
+
+
+      const projects =
+        profile.progress &&
+        typeof profile.progress.projects === "number"
+
+          ? profile.progress.projects
+
+          : Math.min(
+              100,
+              completed.filter(
+                task =>
+                  normalizeCategory(
+                    task.category
+                  ) === "project"
+              ).length * 20
+            );
+
+
+      setSkill(
+        "skillOverall",
+        "fillOverall",
+        overall
+      );
+
+
+      setSkill(
+        "skillTechnical",
+        "fillTechnical",
+        technical
+      );
+
+
+      setSkill(
+        "skillProjects",
+        "fillProjects",
+        projects
+      );
+
+    }
+
+
+
+    function setSkill(
+      textId,
+      fillId,
+      value
+    ) {
+
+      const safeValue =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            Number(value) || 0
+          )
+        );
+
+
+      document.getElementById(
+        textId
+      ).innerText =
+        `${Math.round(safeValue)}%`;
+
+
+      document.getElementById(
+        fillId
+      ).style.width =
+        `${safeValue}%`;
+
+    }
+
+
+
+    /* =====================================================
+       MILESTONES
+    ===================================================== */
+
+    function renderMilestones() {
+
+      const container =
+        document.getElementById(
+          "milestones"
+        );
+
+
+      const total =
+        getAllTasks().length;
+
+
+      const completed =
+        getCompletedTasks().length;
+
+
+      if (!total) {
+
+        container.innerHTML = `
+          <div class="empty">
+            Your milestones will appear here once
+            your plan is created.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      const milestones = [
+
+        {
+          title:
+            "Start your journey",
+
+          text:
+            "Complete your first task",
+
+          threshold:
+            1
+
+        },
+
+        {
+          title:
+            "Build consistency",
+
+          text:
+            "Complete 25% of your plan",
+
+          threshold:
+            Math.max(
+              1,
+              Math.ceil(
+                total * 0.25
+              )
+            )
+
+        },
+
+        {
+          title:
+            "Gain momentum",
+
+          text:
+            "Complete 50% of your plan",
+
+          threshold:
+            Math.max(
+              1,
+              Math.ceil(
+                total * 0.5
+              )
+            )
+
+        },
+
+        {
+          title:
+            "Reach your first milestone",
+
+          text:
+            "Complete 75% of your plan",
+
+          threshold:
+            Math.max(
+              1,
+              Math.ceil(
+                total * 0.75
+              )
+            )
+
+        },
+
+        {
+          title:
+            "Finish your roadmap",
+
+          text:
+            "Complete your 7-day plan",
+
+          threshold:
+            total
+
+        }
+
+      ];
+
+
+      container.innerHTML =
+        milestones
+          .map(
+            milestone => {
+
+              const done =
+                completed >=
+                milestone.threshold;
+
+
+              const active =
+                !done &&
+                completed >=
+                milestone.threshold - 1;
+
+
+              return `
+
+                <div
+                  class="
+                    milestone
+                    ${done ? "completed" : ""}
+                    ${active ? "active" : ""}
+                  "
+                >
+
+                  <div class="milestone-line">
+
+                    <div class="milestone-dot"></div>
+
+                  </div>
+
+
+                  <div class="milestone-content">
+
+                    <strong>
+                      ${escapeHTML(
+                        milestone.title
+                      )}
+                    </strong>
+
+                    <span>
+                      ${escapeHTML(
+                        milestone.text
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+
+    /* =====================================================
+       RECENT ACTIVITY
+    ===================================================== */
+
+    function renderActivity() {
+
+      const container =
+        document.getElementById(
+          "activity"
+        );
+
+
+      const completed =
+        getCompletedTasks();
+
+
+      if (!completed.length) {
+
+        container.innerHTML = `
+          <div class="empty">
+            No completed tasks yet.
+            Your activity will appear here.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      const recent =
+        completed
+          .slice()
+          .reverse()
+          .slice(0, 6);
+
+
+      container.innerHTML =
+        recent
+          .map(
+            task => {
+
+              const title =
+                task.title ||
+                "Completed task";
+
+
+              const category =
+                task.category ||
+                "Task";
+
+
+              const duration =
+                Number(
+                  task.duration || 0
+                );
+
+
+              return `
+
+                <div class="activity-row">
+
+                  <div class="activity-dot"></div>
+
+
+                  <div class="activity-info">
+
+                    <strong>
+                      ${escapeHTML(title)}
+                    </strong>
+
+                    <span>
+                      ${escapeHTML(category)}
+                      ·
+                      ${duration}
+                      minutes
+                    </span>
+
+                  </div>
+
+
+                  <div class="activity-time">
+                    ✓ Done
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+
+    /* =====================================================
+       WEEKLY BREAKDOWN
+    ===================================================== */
+
+    function renderWeeklyBreakdown() {
+
+      const container =
+        document.getElementById(
+          "weekList"
+        );
+
+
+      if (!plan.length) {
+
+        container.innerHTML = `
+          <div class="empty">
+            No plan data available.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        plan
+          .map(
+            (day, index) => {
+
+              const tasks =
+                Array.isArray(day.tasks)
+                  ? day.tasks
+                  : [];
+
+
+              const completed =
+                tasks.filter(
+                  task =>
+                    Boolean(
+                      taskState[
+                        task.id
+                      ]
+                    )
+                ).length;
+
+
+              const percent =
+                tasks.length
+                  ? Math.round(
+                      completed /
+                      tasks.length *
+                      100
+                    )
+                  : 0;
+
+
+              const dayName =
+                day.title ||
+                day.name ||
+                `Day ${index + 1}`;
+
+
+              return `
+
+                <div class="week-row">
+
+                  <div class="week-number">
+                    ${index + 1}
+                  </div>
+
+
+                  <div class="week-info">
+
+                    <strong>
+                      ${escapeHTML(dayName)}
+                    </strong>
+
+                    <span>
+                      ${completed}/${tasks.length}
+                      tasks completed
+                    </span>
+
+                  </div>
+
+
+                  <div class="week-percent">
+                    ${percent}%
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+
+    /* =====================================================
+       FOCUS AREAS
+    ===================================================== */
+
+    function renderFocus() {
+
+      const container =
+        document.getElementById(
+          "focusList"
+        );
+
+
+      const interests =
+        Array.isArray(profile.interests)
+          ? profile.interests
+          : [];
+
+
+      const items = [
+
+        {
+          icon: "🎯",
+
+          title:
+            profile.goal ||
+            "Personal Growth",
+
+          text:
+            "Primary goal"
+
+        },
+
+        {
+          icon: "🧠",
+
+          title:
+            interests[0] ||
+            "Core Skills",
+
+          text:
+            "Main learning area"
+
+        },
+
+        {
+          icon: "⏱",
+
+          title:
+            `${profile.dailyTime || 60} min/day`,
+
+          text:
+            "Available learning time"
+
+        },
+
+        {
+          icon: "⚡",
+
+          title:
+            profile.learningStyle ||
+            "Focused practice",
+
+          text:
+            "Learning approach"
+
+        }
+
+      ];
+
+
+      container.innerHTML =
+        items
+          .map(
+            item => `
+
+              <div class="activity-row">
+
+                <div
+                  class="stat-icon"
+                  style="
+                    width: 28px;
+                    height: 28px;
+                    margin: 0;
+                    flex: 0 0 auto;
+                  "
+                >
+                  ${item.icon}
+                </div>
+
+
+                <div class="activity-info">
+
+                  <strong>
+                    ${escapeHTML(item.title)}
+                  </strong>
+
+                  <span>
+                    ${escapeHTML(item.text)}
+                  </span>
+
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+    }
+
+
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+
+    function goDashboard() {
+
+      window.location.href =
+        "dashboard.html";
+
+    }
+
+
+    function goPlanner() {
+
+      window.location.href =
+        "planner.html";
+
+    }
+
+
+
+    /* =====================================================
+       UTILITY
+    ===================================================== */
+
+    function escapeHTML(value) {
+
+      return String(value)
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
+
+    function initializeProgressPage() {
+
+      if (!loadData()) {
+        return;
+      }
+
+
+      renderProfile();
+
+      renderOverallProgress();
+
+      renderStats();
+
+      renderSkills();
+
+      renderMilestones();
+
+      renderActivity();
+
+      renderWeeklyBreakdown();
+
+      renderFocus();
+
+    }
+
+
+    initializeProgressPage();
+
+
+    /* =====================================================
+       LIVE UPDATE
+       If planner.html changes localStorage while this
+       page is open, refresh the progress automatically.
+    ===================================================== */
+
+    window.addEventListener(
+      "storage",
+      event => {
+
+        if (
+          event.key ===
+          "campusCompassPlannerTasks" ||
+          event.key ===
+          "campusCompassPlan" ||
+          event.key ===
+          "campusCompassStudent"
+        ) {
+
+          initializeProgressPage();
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
